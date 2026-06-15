@@ -1,0 +1,137 @@
+@if (toast(); as t) {
+  <div class="fixed left-1/2 top-5 z-50 -translate-x-1/2 animate-fade-in-up">
+    <div class="flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-medium text-white shadow-lg" [class.bg-emerald-500]="t.type==='success'" [class.bg-red-500]="t.type==='error'">{{ t.msg }}</div>
+  </div>
+}
+
+<div class="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+  <!-- header -->
+  <div class="mb-6">
+    <a id="post-back-dashboard-link" routerLink="/admin/home" class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-brand-600">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
+      Dashboard
+    </a>
+    <h1 class="mt-2 text-2xl font-bold text-slate-900 dark:text-white" style="font-family:'Bricolage Grotesque',ui-sans-serif">Post new job</h1>
+    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Publish an opening — it appears instantly on the student job board.</p>
+  </div>
+
+  @if (serverError()) {
+    <div class="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">{{ serverError() }}</div>
+  }
+
+  <form id="post-form" [formGroup]="form" (ngSubmit)="publish()" class="grid gap-6 lg:grid-cols-2" novalidate>
+
+    <!-- Card 1: Company & role -->
+    <section id="post-company-role-section" class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <h3 class="mb-4 text-sm font-bold text-slate-900 dark:text-white">Company &amp; role</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Company name <span class="text-red-500">*</span></label>
+          <input id="post-company-input" formControlName="companyName" placeholder="e.g. Zoho Corporation" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white" [class.border-red-400]="f.companyName.invalid && f.companyName.touched" />
+          @if (f.companyName.invalid && f.companyName.touched) { <p class="mt-1 text-xs text-red-500">Company name is required.</p> }
+        </div>
+        <div>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Job title <span class="text-red-500">*</span></label>
+          <input id="post-job-title-input" formControlName="jobTitle" placeholder="e.g. Software Engineer" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white" [class.border-red-400]="f.jobTitle.invalid && f.jobTitle.touched" />
+          @if (f.jobTitle.invalid && f.jobTitle.touched) { <p class="mt-1 text-xs text-red-500">Job title is required.</p> }
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Location <span class="text-red-500">*</span></label>
+            <input id="post-location-input" formControlName="location" placeholder="e.g. Chennai" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white" [class.border-red-400]="f.location.invalid && f.location.touched" />
+            @if (f.location.invalid && f.location.touched) { <p class="mt-1 text-xs text-red-500">Location is required.</p> }
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">CTC / year (₹) <span class="text-red-500">*</span></label>
+            <input id="post-ctc-input" type="number" formControlName="ctcPerYear" placeholder="e.g. 600000" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white" [class.border-red-400]="f.ctcPerYear.invalid && f.ctcPerYear.touched" />
+            @if (f.ctcPerYear.invalid && f.ctcPerYear.touched) { <p class="mt-1 text-xs text-red-500">Enter a valid CTC.</p> }
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Employment type <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-3 gap-2">
+            @for (t of employmentTypes; track t.value) {
+              <button type="button" [id]="'post-employment-type-' + t.value" (click)="employmentType.set(t.value)"
+                      class="rounded-xl border px-3 py-2.5 text-sm font-medium transition"
+                      [class.border-brand-400]="employmentType()===t.value" [class.bg-brand-50]="employmentType()===t.value" [class.text-brand-700]="employmentType()===t.value"
+                      [class.border-slate-200]="employmentType()!==t.value" [class.text-slate-600]="employmentType()!==t.value">
+                {{ t.label }}
+              </button>
+            }
+          </div>
+        </div>
+        <div>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Work mode <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-3 gap-2">
+            @for (m of workModes; track m.value) {
+              <button type="button" [id]="'post-work-mode-' + m.value" (click)="workMode.set(m.value)"
+                      class="rounded-xl border px-3 py-2.5 text-sm font-medium transition"
+                      [class.border-brand-400]="workMode()===m.value" [class.bg-brand-50]="workMode()===m.value" [class.text-brand-700]="workMode()===m.value"
+                      [class.border-slate-200]="workMode()!==m.value" [class.text-slate-600]="workMode()!==m.value">
+                {{ m.label }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 2: Eligibility & requirements -->
+    <section id="post-eligibility-section" class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <h3 class="mb-4 text-sm font-bold text-slate-900 dark:text-white">Eligibility &amp; requirements</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Minimum CGPA</label>
+          <input id="post-min-cgpa-input" type="number" step="0.1" min="0" max="10" formControlName="minCgpa" placeholder="e.g. 7.0" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white" [class.border-red-400]="f.minCgpa.invalid && f.minCgpa.touched" />
+          @if (f.minCgpa.errors?.['range'] && f.minCgpa.touched) { <p class="mt-1 text-xs text-red-500">{{ f.minCgpa.errors?.['range'] }}</p> }
+        </div>
+        <div>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Required skills <span class="text-red-500">*</span></label>
+          <div class="flex gap-2">
+            <input id="post-skill-input" [value]="skillInput()" (input)="skillInput.set($any($event.target).value)" (keyup.enter)="addSkill()" placeholder="Type a skill, press Enter" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white" [class.border-red-400]="skillError()" />
+            <button id="post-add-skill-btn" type="button" (click)="addSkill()" class="rounded-xl bg-brand-500 px-4 text-sm font-semibold text-white transition hover:bg-brand-600">Add</button>
+          </div>
+          @if (skillError()) { <p class="mt-1 text-xs text-red-500">Add at least one skill.</p> }
+          <div class="mt-3 flex flex-wrap gap-2">
+            @for (s of skills(); track s) {
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-3 py-1 text-sm font-medium text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
+                {{ s }} <button type="button" [id]="'post-remove-skill-' + s" (click)="removeSkill(s)" class="text-brand-500 hover:text-red-500">✕</button>
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 3: Job description -->
+    <section id="post-description-section" class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:col-span-2">
+      <div class="mb-4 flex items-center justify-between">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white">Job description <span class="text-red-500">*</span></h3>
+        <span class="text-xs text-slate-400">{{ f.description.value?.length || 0 }} / 2000</span>
+      </div>
+      <textarea id="post-description-textarea" formControlName="description" rows="5" placeholder="Describe the role, responsibilities, and requirements…" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white" [class.border-red-400]="f.description.invalid && f.description.touched"></textarea>
+      @if (f.description.invalid && f.description.touched) { <p class="mt-1 text-xs text-red-500">Job description is required.</p> }
+    </section>
+
+    <!-- Card 4: Deadline -->
+    <section id="post-deadline-section" class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:col-span-2">
+      <h3 class="mb-4 text-sm font-bold text-slate-900 dark:text-white">Application deadline <span class="text-red-500">*</span></h3>
+      <input id="post-deadline-input" type="datetime-local" formControlName="applicationDeadline" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white sm:w-72" [class.border-red-400]="f.applicationDeadline.invalid && f.applicationDeadline.touched" />
+      @if (f.applicationDeadline.errors?.['required'] && f.applicationDeadline.touched) { <p class="mt-1 text-xs text-red-500">Deadline is required.</p> }
+      @else if (f.applicationDeadline.errors?.['future'] && f.applicationDeadline.touched) { <p class="mt-1 text-xs text-red-500">{{ f.applicationDeadline.errors?.['future'] }}</p> }
+    </section>
+
+    <!-- footer -->
+    <div class="flex justify-end gap-3 lg:col-span-2">
+      <button id="post-cancel-btn" type="button" (click)="cancel()" class="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">Cancel</button>
+      <button id="post-publish-btn" type="submit" [disabled]="submitting()" class="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:opacity-60">
+        @if (submitting()) {
+          <svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg> Publishing…
+        } @else {
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg> Publish job
+        }
+      </button>
+    </div>
+  </form>
+</div>

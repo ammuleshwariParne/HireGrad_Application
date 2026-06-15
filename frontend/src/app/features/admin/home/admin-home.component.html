@@ -1,0 +1,190 @@
+<div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+
+  <!-- HERO -->
+  <section id="admin-home-hero" (mousemove)="onAuroraMove($event)" (mouseleave)="onAuroraLeave()"
+           class="relative overflow-hidden rounded-3xl p-6 text-white shadow-xl animate-fade-in-up sm:p-8 lg:p-10"
+           style="background-image:linear-gradient(135deg,#047857,#059669 45%,#34d399)">
+    <div class="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-emerald-200/40 blur-3xl"
+         [style.transform]="'translate(' + auroraX() + 'px,' + auroraY() + 'px)'" style="transition:transform .2s ease-out"></div>
+    <div class="pointer-events-none absolute -bottom-24 right-0 h-96 w-96 rounded-full bg-teal-200/30 blur-3xl"
+         [style.transform]="'translate(' + (-auroraX()) + 'px,' + (-auroraY()) + 'px)'" style="transition:transform .2s ease-out"></div>
+
+    <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div>
+        <p class="text-sm font-medium text-emerald-50/80">{{ greeting }},</p>
+        <h1 class="mt-1 text-3xl font-bold tracking-tight sm:text-4xl" style="font-family:'Bricolage Grotesque',ui-sans-serif">
+          {{ firstName() }} 👋
+        </h1>
+        <p class="mt-3 max-w-md text-sm leading-relaxed text-emerald-50/90">
+          Here's how your placement drive is performing. Post jobs, review applications, and provision student accounts.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <div id="admin-home-stat-active-jobs" class="rounded-2xl bg-white/15 px-4 py-3 ring-1 ring-white/20 backdrop-blur animate-float">
+          <div class="text-2xl font-bold">{{ activeJobs() }}</div>
+          <div class="text-[11px] uppercase tracking-wide text-emerald-50/80">Active jobs</div>
+        </div>
+        <div id="admin-home-stat-applicants" class="rounded-2xl bg-white/15 px-4 py-3 ring-1 ring-white/20 backdrop-blur animate-float" style="animation-delay:1s">
+          <div class="text-2xl font-bold">{{ totalApplicants() }}</div>
+          <div class="text-[11px] uppercase tracking-wide text-emerald-50/80">Applicants</div>
+        </div>
+        <div id="admin-home-stat-pending" class="rounded-2xl bg-white/15 px-4 py-3 ring-1 ring-white/20 backdrop-blur animate-float" style="animation-delay:2s">
+          <div class="text-2xl font-bold">{{ pendingReviews() }}</div>
+          <div class="text-[11px] uppercase tracking-wide text-emerald-50/80">Pending</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUMMARY CARDS -->
+  <section id="admin-home-summary-section" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    @for (card of summaryCards(); track card.label; let i = $index) {
+      <a [id]="'admin-home-summary-' + card.label" [routerLink]="card.link" appTilt
+         class="group block rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+         [style.animation-delay]="(i * 80) + 'ms'"
+         style="transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+        <div class="flex items-center justify-between">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-100 text-brand-600 dark:bg-brand-500/15 dark:text-brand-300">
+            @switch (card.icon) {
+              @case ('briefcase') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg> }
+              @case ('users') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg> }
+              @case ('check') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg> }
+              @case ('clipboard') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /></svg> }
+            }
+          </span>
+          <span class="text-slate-300 transition group-hover:translate-x-1 group-hover:text-brand-500">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+          </span>
+        </div>
+        <div class="mt-4 text-3xl font-bold text-slate-900 dark:text-white">{{ card.value }}</div>
+        <div class="mt-1 text-sm font-medium text-slate-700 dark:text-slate-200">{{ card.label }}</div>
+        <div class="text-xs text-slate-400">{{ card.hint }}</div>
+      </a>
+    }
+  </section>
+
+  <!-- POSTINGS OVERVIEW + PLACEMENT RATE RING -->
+  <section id="admin-home-postings-placement-section" class="mt-6 grid gap-4 lg:grid-cols-3">
+    <!-- postings overview table -->
+    <div id="admin-home-postings-card" class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900 lg:col-span-2">
+      <div class="flex items-center justify-between">
+        <h2 class="font-bold text-slate-900 dark:text-white">Postings overview</h2>
+        <a id="admin-home-post-a-job-link" routerLink="/admin/jobs" class="text-xs font-medium text-brand-600 hover:underline">Post a job</a>
+      </div>
+      @if (postings().length) {
+        <div class="mt-4 overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-400 dark:border-slate-800">
+              <tr id="admin-home-postings-header-row">
+                <th class="py-2 pr-3 font-semibold">Role</th>
+                <th class="py-2 px-3 font-semibold">Applicants</th>
+                <th class="py-2 px-3 font-semibold">Selected</th>
+                <th class="py-2 pl-3"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+              @for (p of postings(); track p.jobId) {
+                <tr [id]="'admin-home-posting-row-' + p.jobId" class="transition hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                  <td class="py-3 pr-3">
+                    <div class="flex items-center gap-2.5">
+                      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-xs font-bold text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">{{ p.companyName.charAt(0) }}</span>
+                      <div class="min-w-0">
+                        <p class="truncate font-medium text-slate-900 dark:text-white">{{ p.jobTitle }}</p>
+                        <p class="truncate text-xs text-slate-400">{{ p.companyName }} · {{ typeLabel(p.employmentType) }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-3 px-3 font-semibold text-slate-700 dark:text-slate-200">{{ p.applicantCount }}</td>
+                  <td class="py-3 px-3">
+                    <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">{{ p.selectedCount }}</span>
+                  </td>
+                  <td class="py-3 pl-3 text-right">
+                    <a [id]="'admin-home-posting-manage-' + p.jobId" routerLink="/admin/applications" class="text-xs font-medium text-brand-600 hover:underline">Manage</a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="mt-6 rounded-2xl border border-dashed border-slate-300 py-10 text-center text-sm text-slate-400 dark:border-slate-700">
+          No job postings yet.
+          <a id="admin-home-post-first-job-link" routerLink="/admin/jobs" class="mt-1 block font-medium text-brand-600 hover:underline">Post your first job →</a>
+        </div>
+      }
+    </div>
+
+    <!-- placement rate ring -->
+    <div id="admin-home-placement-rate-card" class="rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900" style="animation-delay:120ms">
+      <div class="relative mx-auto h-32 w-32">
+        <svg viewBox="0 0 120 120" class="h-32 w-32 -rotate-90">
+          <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="text-slate-100 dark:text-slate-800" stroke="currentColor" />
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#34d399" stroke-width="10" stroke-linecap="round"
+                  [attr.stroke-dasharray]="ringCircumference" [attr.stroke-dashoffset]="ringDashoffset()" style="transition:stroke-dashoffset 1s ease" />
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span class="text-2xl font-bold text-slate-900 dark:text-white">{{ placementRate() }}%</span>
+          <span class="text-[11px] text-slate-400">selected</span>
+        </div>
+      </div>
+      <p class="mt-4 text-sm font-medium text-slate-700 dark:text-slate-200">Selection rate</p>
+      <p class="mt-1 text-xs text-slate-400">Share of applicants marked Selected.</p>
+      <a id="admin-home-manage-applications-btn" routerLink="/admin/applications"
+         class="mt-4 inline-flex items-center justify-center rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
+        Manage applications
+      </a>
+    </div>
+  </section>
+
+  <!-- RECENT ACTIVITY + QUICK ACTIONS -->
+  <section id="admin-home-activity-actions-section" class="mt-6 grid gap-4 lg:grid-cols-3">
+    <!-- recent activity feed -->
+    <div id="admin-home-recent-activity-card" class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900 lg:col-span-2">
+      <h2 class="font-bold text-slate-900 dark:text-white">Recent activity</h2>
+      @if (recentActivity().length) {
+        <ul id="admin-home-recent-activity-list" class="mt-4 divide-y divide-slate-100 dark:divide-slate-800">
+          @for (a of recentActivity(); track a.studentUsername + a.jobTitle) {
+            <li [id]="'admin-home-activity-' + a.studentUsername + '-' + a.jobTitle" class="flex items-center gap-3 py-3">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">{{ initials(a.fullName) }}</span>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm text-slate-700 dark:text-slate-200">
+                  <span class="font-medium text-slate-900 dark:text-white">{{ a.fullName }}</span>
+                  applied to {{ a.jobTitle }} <span class="text-slate-400">@ {{ a.companyName }}</span>
+                </p>
+                <p class="truncate text-xs text-slate-400">{{ a.appliedAt | date:'dd MMM, HH:mm' }}</p>
+              </div>
+              <span class="rounded-full px-2.5 py-1 text-xs font-semibold" [class]="statusClass(a.status)">{{ statusLabel(a.status) }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <div class="mt-6 rounded-2xl border border-dashed border-slate-300 py-10 text-center text-sm text-slate-400 dark:border-slate-700">
+          No applications yet. Activity will appear here as students apply.
+        </div>
+      }
+    </div>
+
+    <!-- quick actions -->
+    <div id="admin-home-quick-actions" class="grid gap-4">
+      @for (a of quickActions; track a.label; let i = $index) {
+        <a [id]="'admin-home-quick-action-' + a.label" [routerLink]="a.link" appTilt
+           class="group flex items-center gap-3 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+           [style.animation-delay]="(i * 80 + 240) + 'ms'"
+           style="transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-emerald-950 shadow" style="background-image:linear-gradient(135deg,#6ee7b7,#34d399)">
+            @switch (a.icon) {
+              @case ('briefcase') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg> }
+              @case ('clipboard') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /></svg> }
+              @case ('user-plus') { <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" x2="19" y1="8" y2="14" /><line x1="22" x2="16" y1="11" y2="11" /></svg> }
+            }
+          </span>
+          <div>
+            <div class="font-semibold text-slate-900 dark:text-white">{{ a.label }}</div>
+            <div class="text-xs text-slate-400">{{ a.desc }}</div>
+          </div>
+        </a>
+      }
+    </div>
+  </section>
+</div>

@@ -1,0 +1,369 @@
+<!-- toast -->
+@if (toast(); as t) {
+  <div class="fixed left-1/2 top-5 z-50 -translate-x-1/2 animate-fade-in-up">
+    <div class="flex items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-medium text-white shadow-lg"
+         [class.bg-emerald-500]="t.type === 'success'" [class.bg-red-500]="t.type === 'error'">
+      @if (t.type === 'success') {
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+      } @else {
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" /></svg>
+      }
+      {{ t.msg }}
+    </div>
+  </div>
+}
+
+<div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+
+  <!-- header row -->
+  <div class="mb-6 flex items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-white" style="font-family:'Bricolage Grotesque',ui-sans-serif">My profile</h1>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Keep your details up to date to improve eligibility matches.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      @if (!editing()) {
+        <button id="profile-edit-toggle-btn" (click)="enterEdit()" class="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+          Edit profile
+        </button>
+      } @else {
+        <button id="profile-cancel-btn" (click)="cancel()" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">Cancel</button>
+        <button id="profile-save-btn" (click)="save()" [disabled]="saving()" class="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400">
+          @if (saving()) {
+            <svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+            Saving…
+          } @else { Save changes }
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-3">
+
+    <!-- ===== LEFT SUMMARY CARD (photo, completeness, contact, logout) ===== -->
+    <aside id="profile-photo-section" appTilt class="h-fit rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900"
+           style="transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+      <!-- circular photo upload -->
+      <div class="relative mx-auto h-28 w-28">
+        <div class="h-28 w-28 overflow-hidden rounded-full ring-4 ring-brand-100 dark:ring-brand-500/20">
+          @if (photo()) {
+            <img [src]="photo()" alt="Profile photo" class="h-full w-full object-cover" />
+          } @else {
+            <div class="flex h-full w-full items-center justify-center bg-slate-100 text-slate-400 dark:bg-slate-800">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+            </div>
+          }
+        </div>
+        @if (editing()) {
+          <label class="absolute bottom-0 right-0 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-brand-500 text-white shadow-lg transition hover:bg-brand-600" title="Upload photo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></svg>
+            <input id="profile-photo-input" type="file" accept="image/*" class="hidden" (change)="onPhoto($event)" />
+          </label>
+        }
+      </div>
+      @if (editing() && photo()) {
+        <button id="profile-remove-photo-btn" (click)="removePhoto()" class="mt-2 text-xs text-slate-400 hover:text-red-500">Remove photo</button>
+      }
+
+      <h2 class="mt-4 truncate text-lg font-bold text-slate-900 dark:text-white">{{ displayName() }}</h2>
+      <p class="text-xs text-slate-400">{{ username() }}</p>
+
+      <!-- completeness ring -->
+      <div class="relative mx-auto mt-5 h-28 w-28">
+        <svg viewBox="0 0 120 120" class="h-28 w-28 -rotate-90">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="10" class="text-slate-100 dark:text-slate-800" />
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#34d399" stroke-width="10" stroke-linecap="round"
+                  [attr.stroke-dasharray]="ringCircumference" [attr.stroke-dashoffset]="ringDashoffset()" style="transition:stroke-dashoffset .8s ease" />
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span class="text-2xl font-bold text-slate-900 dark:text-white">{{ profileCompleteness() }}%</span>
+          <span class="text-[11px] text-slate-400">complete</span>
+        </div>
+      </div>
+
+      <!-- contact lines -->
+      <div class="mt-5 space-y-2 text-left text-sm">
+        <p class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+          <span class="truncate">{{ f.instituteEmail.value || 'Institute email' }}</span>
+        </p>
+        <p class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+          <span class="truncate">{{ f.countryCode.value }} {{ f.phone.value || 'Phone' }}</span>
+        </p>
+        <p class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>
+          <span class="truncate">{{ f.address.value || 'Address' }}</span>
+        </p>
+      </div>
+
+      <!-- logout -->
+      <button id="profile-logout-btn" (click)="logout()" class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 dark:border-red-900/50 dark:hover:bg-red-950/40">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg>
+        Logout
+      </button>
+    </aside>
+
+    <!-- ===== RIGHT SECTION CARDS ===== -->
+    <div class="space-y-6 lg:col-span-2">
+
+      <!-- Personal info -->
+      <section id="profile-personal-info-section" appTilt class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900"
+               style="animation-delay:80ms; transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+        <h3 class="mb-4 text-sm font-bold text-slate-900 dark:text-white">Personal information</h3>
+        <form id="profile-personal-info-form" [formGroup]="form" class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">First name</label>
+            <input id="profile-first-name-input" formControlName="firstName" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.firstName.invalid && f.firstName.touched" />
+            @if (f.firstName.invalid && f.firstName.touched) { <p class="mt-1 text-xs text-red-500">First name is required.</p> }
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Middle name <span class="font-normal normal-case text-slate-400">(optional)</span></label>
+            <input id="profile-middle-name-input" formControlName="middleName" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" />
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Last name</label>
+            <input id="profile-last-name-input" formControlName="lastName" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.lastName.invalid && f.lastName.touched" />
+            @if (f.lastName.invalid && f.lastName.touched) { <p class="mt-1 text-xs text-red-500">Last name is required.</p> }
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Address</label>
+            <input id="profile-address-input" formControlName="address" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" />
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Institute email</label>
+            <input id="profile-institute-email-input" formControlName="instituteEmail" type="email" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.instituteEmail.invalid && f.instituteEmail.touched" />
+            @if (f.instituteEmail.invalid && f.instituteEmail.touched) { <p class="mt-1 text-xs text-red-500">Enter a valid institute email.</p> }
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Personal email</label>
+            <input id="profile-personal-email-input" formControlName="personalEmail" type="email" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.personalEmail.invalid && f.personalEmail.touched" />
+            @if (f.personalEmail.invalid && f.personalEmail.touched) { <p class="mt-1 text-xs text-red-500">Enter a valid personal email.</p> }
+          </div>
+          <div class="sm:col-span-2">
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Phone</label>
+            <div class="flex gap-2">
+              <select id="profile-country-code-select" formControlName="countryCode" class="rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50">
+                @for (c of countryCodes; track c.code) { <option [value]="c.code">{{ c.label }}</option> }
+              </select>
+              <input id="profile-phone-input" formControlName="phone" inputmode="numeric" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.phone.invalid && f.phone.touched" />
+            </div>
+            @if (f.phone.invalid && f.phone.touched) { <p class="mt-1 text-xs text-red-500">Enter a valid phone number (7–15 digits).</p> }
+          </div>
+        </form>
+      </section>
+
+      <!-- Skills -->
+      <section appTilt class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900"
+               style="animation-delay:160ms; transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+        <h3 class="mb-4 text-sm font-bold text-slate-900 dark:text-white">Skills</h3>
+        @if (editing()) {
+          <div class="flex gap-2">
+            <input [value]="skillInput()" (input)="skillInput.set($any($event.target).value)" (keyup.enter)="addSkill()" placeholder="Type a skill and press Enter"
+                   class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white" />
+            <button (click)="addSkill()" class="rounded-xl bg-brand-500 px-4 text-sm font-semibold text-white transition hover:bg-brand-600">Add</button>
+          </div>
+        }
+        <div class="mt-3 flex flex-wrap gap-2">
+          @for (s of skills(); track s) {
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-100 px-3 py-1 text-sm font-medium text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
+              {{ s }}
+              @if (editing()) { <button (click)="removeSkill(s)" class="text-brand-500 hover:text-red-500" aria-label="Remove skill">✕</button> }
+            </span>
+          } @empty {
+            <p class="text-sm text-slate-400">No skills added yet.</p>
+          }
+        </div>
+      </section>
+
+      <!-- Academic details (collapsible) -->
+      <section appTilt class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900"
+               style="animation-delay:240ms; transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+        <button (click)="academicsOpen.set(!academicsOpen())" class="flex w-full items-center justify-between text-sm font-bold text-slate-900 dark:text-white">
+          Academic details
+          <svg [class.rotate-180]="academicsOpen()" class="transition-transform" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </button>
+        @if (academicsOpen()) {
+          <form [formGroup]="form" class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">10th school</label>
+              <input formControlName="tenthSchool" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" />
+            </div>
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">10th %</label>
+              <input formControlName="tenthPercent" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.tenthPercent.invalid && f.tenthPercent.touched" />
+              @if (f.tenthPercent.errors?.['percent'] && f.tenthPercent.touched) { <p class="mt-1 text-xs text-red-500">{{ f.tenthPercent.errors?.['percent'] }}</p> }
+            </div>
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">12th school</label>
+              <input formControlName="twelfthSchool" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" />
+            </div>
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">12th %</label>
+              <input formControlName="twelfthPercent" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.twelfthPercent.invalid && f.twelfthPercent.touched" />
+              @if (f.twelfthPercent.errors?.['percent'] && f.twelfthPercent.touched) { <p class="mt-1 text-xs text-red-500">{{ f.twelfthPercent.errors?.['percent'] }}</p> }
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">B.Tech college</label>
+              <input formControlName="college" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" />
+            </div>
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Course</label>
+              <select formControlName="course" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50">
+                <option value="">Select course</option>
+                @for (c of courses; track c) { <option [value]="c">{{ c }}</option> }
+              </select>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Pass-out year</label>
+              <select formControlName="passOutYear" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50">
+                <option value="">Select year</option>
+                @for (y of passOutYears; track y) { <option [value]="y">{{ y }}</option> }
+              </select>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">CGPA</label>
+              <input formControlName="cgpa" placeholder="0.00 – 10.00" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.cgpa.invalid && f.cgpa.touched" />
+              @if (f.cgpa.errors?.['cgpa'] && f.cgpa.touched) { <p class="mt-1 text-xs text-red-500">{{ f.cgpa.errors?.['cgpa'] }}</p> }
+            </div>
+          </form>
+        }
+      </section>
+
+      <!-- Resume -->
+      <section appTilt class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900"
+               style="animation-delay:320ms; transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+        <h3 class="mb-4 text-sm font-bold text-slate-900 dark:text-white">Resume</h3>
+
+        <!-- file option -->
+        @if (resumeFileName()) {
+          <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/50">
+            <span class="flex items-center gap-2 truncate text-sm text-slate-700 dark:text-slate-200">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
+              <span class="truncate">{{ resumeFileName() }}</span>
+            </span>
+            <span class="flex items-center gap-2">
+              @if (resumeObjectUrl()) { <a [href]="resumeObjectUrl()" [download]="resumeFileName()" class="text-xs font-semibold text-brand-600 hover:underline">Download</a> }
+              @if (editing()) { <button (click)="removeResume()" class="text-xs text-slate-400 hover:text-red-500">Remove</button> }
+            </span>
+          </div>
+        } @else if (editing()) {
+          <label class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 px-4 py-5 text-sm text-slate-500 transition hover:border-brand-400 hover:text-brand-600 dark:border-slate-700">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
+            Upload PDF or DOCX
+            <input type="file" accept=".pdf,.doc,.docx" class="hidden" (change)="onResume($event)" />
+          </label>
+        } @else {
+          <p class="text-sm text-slate-400">No resume uploaded.</p>
+        }
+
+        <!-- link option -->
+        <div class="mt-3">
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Or paste a resume link</label>
+          <form [formGroup]="form" class="flex gap-2">
+            <input formControlName="resumeLink" placeholder="https://drive.google.com/…" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="(f.resumeLink.invalid && f.resumeLink.touched) || linkError()" />
+            @if (editing()) { <button type="button" (click)="saveResumeLink()" class="rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300">Save link</button> }
+          </form>
+          @if (linkError()) { <p class="mt-1 text-xs text-red-500">{{ linkError() }}</p> }
+          @else if (f.resumeLink.errors?.['url'] && f.resumeLink.touched) { <p class="mt-1 text-xs text-red-500">{{ f.resumeLink.errors?.['url'] }}</p> }
+        </div>
+      </section>
+
+      <!-- Projects -->
+      <section appTilt class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900"
+               style="animation-delay:400ms; transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white">Projects</h3>
+          @if (editing()) {
+            <button (click)="addProject()" class="inline-flex items-center gap-1.5 rounded-xl bg-brand-100 px-3 py-1.5 text-xs font-semibold text-brand-700 transition hover:bg-brand-200 dark:bg-brand-500/15 dark:text-brand-300">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
+              Add project
+            </button>
+          }
+        </div>
+        <div class="space-y-3">
+          @for (p of projects(); track $index) {
+            <div class="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
+              <div class="flex items-start justify-between gap-3">
+                <input [value]="p.title" (input)="updateProject($index, 'title', $any($event.target).value)" [disabled]="!editing()" placeholder="Project title"
+                       class="w-full rounded-lg border border-transparent bg-transparent px-1 py-1 text-sm font-semibold text-slate-900 outline-none focus:border-brand-300 disabled:text-slate-700 dark:text-white" />
+                @if (editing()) { <button (click)="removeProject($index)" class="shrink-0 text-slate-400 hover:text-red-500" aria-label="Remove project">✕</button> }
+              </div>
+              <textarea [value]="p.description" (input)="updateProject($index, 'description', $any($event.target).value)" [disabled]="!editing()" rows="2" placeholder="Short description"
+                        class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm text-slate-700 outline-none focus:border-brand-400 disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:disabled:bg-slate-800/50"></textarea>
+              <input [value]="p.link" (input)="updateProject($index, 'link', $any($event.target).value)" [disabled]="!editing()" placeholder="Link (optional)"
+                     class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-brand-600 outline-none focus:border-brand-400 disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:disabled:bg-slate-800/50" />
+            </div>
+          } @empty {
+            <p class="text-sm text-slate-400">No projects added yet.</p>
+          }
+        </div>
+      </section>
+
+      <!-- Links -->
+      <section id="profile-links-section" appTilt class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm animate-fade-in-up dark:border-slate-800 dark:bg-slate-900"
+               style="animation-delay:480ms; transform-style:preserve-3d; transition:transform .25s ease, box-shadow .3s ease">
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
+            <svg class="text-brand-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+            Links
+          </h3>
+          @if (editing()) { <span class="text-xs font-medium text-brand-600">editing</span> }
+        </div>
+
+        <div class="space-y-3">
+          @for (l of links(); track $index) {
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                  @switch (l.type) {
+                    @case ('github') { <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z" /></svg> }
+                    @case ('leetcode') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg> }
+                    @case ('linkedin') { <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" /></svg> }
+                    @case ('portfolio') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg> }
+                    @default { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg> }
+                  }
+                </span>
+                @if (l.type === 'custom') {
+                  <input [value]="l.label" (input)="updateLink($index, 'label', $any($event.target).value)" [disabled]="!editing()" placeholder="Label"
+                         class="w-32 shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" />
+                }
+                <input [id]="'profile-link-' + $index + '-input'" [value]="l.url" (input)="updateLink($index, 'url', $any($event.target).value)" [disabled]="!editing()"
+                       [placeholder]="(linkTypes[l.type]?.label || 'Link') + ' URL'"
+                       class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50"
+                       [class.border-red-400]="linkUrlError(l)" />
+                @if (editing()) {
+                  <button (click)="removeLink($index)" aria-label="Remove link"
+                          class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-400 transition hover:border-red-300 hover:text-red-500 dark:border-slate-700">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                  </button>
+                }
+              </div>
+              @if (linkUrlError(l)) {
+                <p class="ml-12 mt-1 flex items-center gap-1 text-xs text-red-500">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" /></svg>
+                  {{ linkUrlError(l) }}
+                </p>
+              }
+            </div>
+          } @empty {
+            <p class="text-sm text-slate-400">No links added yet.</p>
+          }
+        </div>
+
+        @if (editing()) {
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Add:</span>
+            <button (click)="addLink('github')" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-slate-700 dark:text-slate-300">GitHub</button>
+            <button (click)="addLink('leetcode')" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-slate-700 dark:text-slate-300">LeetCode</button>
+            <button (click)="addLink('linkedin')" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-slate-700 dark:text-slate-300">LinkedIn</button>
+            <button (click)="addLink('portfolio')" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-slate-700 dark:text-slate-300">Portfolio</button>
+            <button (click)="addLink('custom')" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-slate-700 dark:text-slate-300">+ Custom</button>
+          </div>
+        }
+      </section>
+
+    </div>
+  </div>
+</div>

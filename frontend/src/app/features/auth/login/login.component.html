@@ -1,0 +1,213 @@
+<div id="login-page" class="relative flex h-screen w-full overflow-hidden">
+  <!-- Theme toggle -->
+  <div class="absolute right-5 top-5 z-30">
+    <app-theme-toggle />
+  </div>
+
+  <!-- ============ LEFT: creative brand panel (light green) ============ -->
+  <aside
+    class="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100 bg-[length:200%_200%] p-8 xl:p-10 animate-gradient-pan lg:flex"
+  >
+    <!-- animated decorative blobs -->
+    <div class="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-emerald-300/40 blur-3xl animate-blob"></div>
+    <div class="pointer-events-none absolute -bottom-20 right-0 h-96 w-96 rounded-full bg-teal-300/30 blur-3xl animate-blob [animation-delay:3s]"></div>
+    <div class="pointer-events-none absolute left-1/3 top-1/2 h-64 w-64 rounded-full bg-green-200/40 blur-3xl animate-blob [animation-delay:6s]"></div>
+
+    <!-- logo -->
+    <div class="relative z-10 flex items-center gap-3">
+      <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /><path d="M22 10v6" /><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
+        </svg>
+      </div>
+      <span class="text-xl font-bold tracking-tight text-slate-900">Hire<span class="text-emerald-600">Grad</span></span>
+    </div>
+
+    <!-- centerpiece: floating 3D illustration card + chips -->
+    <div class="group relative z-10 mx-auto my-4 w-fit">
+      <!-- floating chip: top-left -->
+      <div class="absolute -left-6 top-8 z-20 flex items-center gap-2 rounded-xl bg-white/90 px-3 py-2 shadow-xl ring-1 ring-emerald-100 backdrop-blur animate-float [animation-delay:0.4s]">
+        <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>
+        </span>
+        <span class="text-xs font-semibold text-slate-700">Eligible drives</span>
+      </div>
+
+      <!-- floating chip: bottom-right -->
+      <div class="absolute -right-6 bottom-10 z-20 flex items-center gap-2 rounded-xl bg-white/90 px-3 py-2 shadow-xl ring-1 ring-emerald-100 backdrop-blur animate-float [animation-delay:1.6s]">
+        <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-teal-100 text-teal-600">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" /></svg>
+        </span>
+        <span class="text-xs font-semibold text-slate-700">Live tracking</span>
+      </div>
+
+      <!-- float wrapper (outer) + 3D tilt (inner) so they don't conflict -->
+      <div class="animate-float">
+        <div class="rounded-3xl bg-white p-5 shadow-2xl shadow-emerald-900/10 ring-1 ring-emerald-100/80 transition-transform duration-500 ease-out group-hover:[transform:perspective(1200px)_rotateY(-7deg)_rotateX(4deg)_scale(1.03)]">
+          <img
+  src="login-illustration.png"
+  alt="Student managing campus placements"
+  class="w-auto max-h-[34vh] max-w-full rounded-2xl object-contain"
+/>
+        </div>
+      </div>
+    </div>
+
+    <!-- headline + features -->
+    <div class="relative z-10 max-w-md animate-fade-in-up">
+      <h1 class="text-3xl font-extrabold leading-tight text-slate-900">
+        Your campus placement journey,
+        <span class="text-emerald-600">all in one place.</span>
+      </h1>
+      <p class="mt-3 text-sm leading-relaxed text-slate-600">
+        Track applications, discover eligible drives, and manage the entire
+        recruitment lifecycle — built for students and placement cells alike.
+      </p>
+      <ul class="mt-5 space-y-2.5 text-sm text-slate-700">
+        @for (item of features; track item) {
+          <li [id]="'login-feature-' + item" class="flex items-center gap-2.5">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+            </span>
+            {{ item }}
+          </li>
+        }
+      </ul>
+    </div>
+
+    <p class="relative z-10 text-xs text-slate-500">© 2026 HireGrad · Campus Recruitment Portal</p>
+  </aside>
+
+  <!-- ============ RIGHT: login form (same layout, green accents) ============ -->
+  <main class="flex w-full items-center justify-center px-5 py-12 lg:w-1/2">
+    <div class="w-full max-w-md animate-fade-in-up">
+      <!-- mobile logo -->
+      <div class="mb-8 flex items-center gap-3 lg:hidden">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /><path d="M22 10v6" /><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
+          </svg>
+        </div>
+        <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Hire<span class="text-emerald-600">Grad</span></span>
+      </div>
+
+      <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Welcome back</h2>
+      <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+        Sign in to continue to your dashboard.
+      </p>
+
+      <!-- role segmented control -->
+      <div class="mt-7 grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+        <button
+          id="login-role-student-tab"
+          type="button"
+          (click)="setRole('STUDENT')"
+          class="flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-200"
+          [ngClass]="role() === 'STUDENT'
+            ? 'bg-white text-brand-700 shadow-sm dark:bg-slate-700 dark:text-white'
+            : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /><path d="M22 10v6" /><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
+          </svg>
+          Student
+        </button>
+        <button
+          id="login-role-admin-tab"
+          type="button"
+          (click)="setRole('ADMIN')"
+          class="flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-200"
+          [ngClass]="role() === 'ADMIN'
+            ? 'bg-white text-brand-700 shadow-sm dark:bg-slate-700 dark:text-white'
+            : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+          </svg>
+          Placement Cell
+        </button>
+      </div>
+
+      <!-- error state -->
+      @if (errorMsg()) {
+        <div role="alert" class="mt-5 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
+          <svg class="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" />
+          </svg>
+          {{ errorMsg() }}
+        </div>
+      }
+
+      <!-- form -->
+      <form id="login-form" [formGroup]="form" (ngSubmit)="submit()" class="mt-5 space-y-4" novalidate>
+        <!-- username -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Username</label>
+          <div class="relative">
+            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+            </span>
+            <input
+              id="login-username-input"
+              type="text" formControlName="username" placeholder="Enter your username" autocomplete="username"
+              class="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
+              [class.border-red-400]="f.username.touched && f.username.invalid"
+            />
+          </div>
+          @if (f.username.touched && f.username.invalid) {
+            <p class="mt-1.5 text-xs text-red-500">Username is required.</p>
+          }
+        </div>
+
+        <!-- password -->
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
+          <div class="relative">
+            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+            </span>
+            <input
+              id="login-password-input"
+              [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="Enter your password" autocomplete="current-password"
+              class="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-11 text-sm text-slate-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500"
+              [class.border-red-400]="f.password.touched && f.password.invalid"
+            />
+            <button id="login-password-toggle-btn" type="button" (click)="togglePassword()" [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600 dark:hover:text-slate-200">
+              @if (showPassword()) {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /><path d="m2 2 20 20" /></svg>
+              } @else {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+              }
+            </button>
+          </div>
+          @if (f.password.touched && f.password.invalid) {
+            <p class="mt-1.5 text-xs text-red-500">Password must be at least 4 characters.</p>
+          }
+        </div>
+
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+            <input id="login-remember-checkbox" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500/30" />
+            Remember me
+          </label>
+          <a id="login-forgot-password-link" href="javascript:void(0)" class="text-sm font-medium text-brand-600 transition hover:text-brand-700 dark:text-brand-400">Forgot password?</a>
+        </div>
+
+        <!-- submit: gradient + 3D lift on hover -->
+        <button
+          id="login-submit-btn"
+          type="submit" [disabled]="loading()"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:from-emerald-600 hover:to-teal-700 hover:shadow-lg hover:shadow-emerald-500/30 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+        >
+          @if (loading()) {
+            <svg class="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+            Signing in…
+          } @else {
+            Sign in
+          }
+        </button>
+      </form>
+    </div>
+  </main>
+</div>
