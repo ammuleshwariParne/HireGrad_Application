@@ -1,21 +1,4 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/frontend",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=3600"
-        }
-      ]
-    }
-  ]
+  "outputDirectory": "dist/frontend"
 }
