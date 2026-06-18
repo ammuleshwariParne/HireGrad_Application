@@ -39,7 +39,7 @@ export class AuthService {
 
   /** Student replaces their temporary password; clears the forced-change flag locally on success. */
   changePassword(newPassword: string): Observable<void> {
-    return this.http.post<ApiResponse<void>>('/api/student/change-password', { newPassword }).pipe(
+    return this.http.post<ApiResponse<void>>(environment.apiUrl +'/api/student/change-password', { newPassword }).pipe(
       map(() => void 0),
       tap(() => {
         const u = this._user();
