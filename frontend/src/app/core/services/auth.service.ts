@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { AuthUser, LoginRequest, UserRole } from '../models/user.model';
+import { environment } from '../../../environments/environment.prod';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -17,7 +18,7 @@ export class AuthService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly http = inject(HttpClient);
-  private readonly API = '/api/auth';
+  private readonly API = environment.apiUrl + '/api/auth';
 
   private readonly _user = signal<AuthUser | null>(this.restore());
 
