@@ -15,6 +15,5 @@ public class CreateStudentResponse {
     private String rollNumber;
     private String instituteEmail;
     private String personalEmail;
-    /** Plain-text temporary password — shown only in this response, stored hashed. */
     private String temporaryPassword;
 }
