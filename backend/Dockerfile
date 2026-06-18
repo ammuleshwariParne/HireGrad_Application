@@ -9,7 +9,7 @@ COPY src ./src
 RUN mvn package -DskipTests -B
 
 # Stage 2: Run the JAR
-FROM eclipse-temurin:21-jre-alpine  # ✅ FIXED
+FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
