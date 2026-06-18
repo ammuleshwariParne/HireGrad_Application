@@ -60,7 +60,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         // Allow any localhost port (dev servers move between 4200/4300/4301/…).
         // allowedOriginPatterns (not allowedOrigins) is required alongside allowCredentials(true).
-        config.setAllowedOriginPatterns(List.of("https://hiregrad-application.vercel.app"));
+        config.setAllowedOriginPatterns(List.of("https://hiregrad-application.vercel.app","hiregrad-application-605i9lpjv-parneammuleshwari-3144s-projects.vercel.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
