@@ -1,5 +1,24 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/frontend",
+  "serverless": {
+    "nodeVersion": "20.x"
+  },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=3600"
+        }
+      ]
+    }
   ]
 }
