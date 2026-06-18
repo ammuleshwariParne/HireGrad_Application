@@ -1,9 +1,6 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/frontend",
-  "serverless": {
-    "nodeVersion": "20.x"
-  },
   "rewrites": [
     {
       "source": "/(.*)",
