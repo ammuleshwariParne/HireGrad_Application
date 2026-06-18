@@ -33,8 +33,8 @@ public class Job extends BaseEntity {
     private BigDecimal minCgpa;
 
     @ElementCollection
-    @CollectionTable(name = "job_skills", joinColumns = @JoinColumn(name = "job_id"))
-    @Column(name = "skill")
+    @CollectionTable(name = "`job_skills`", joinColumns = @JoinColumn(name = "`job_id`"))
+    @Column(name = "`skill`")
     @Builder.Default
     private List<String> requiredSkills = new ArrayList<>();
 
