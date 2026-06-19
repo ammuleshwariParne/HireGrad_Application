@@ -2,6 +2,8 @@ package com.hiregrad.backend.job.entity;
 
 import com.hiregrad.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -30,6 +32,8 @@ public class Job extends BaseEntity {
     private WorkMode workMode;
 
     @Column(precision = 4, scale = 2)
+    @DecimalMin("0.00")
+    @DecimalMax(value="10.00")
     private BigDecimal minCgpa;
 
     @ElementCollection

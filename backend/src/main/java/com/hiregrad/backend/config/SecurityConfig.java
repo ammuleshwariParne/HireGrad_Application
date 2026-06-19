@@ -4,6 +4,7 @@ import com.hiregrad.backend.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -35,6 +36,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/student/**").hasRole("STUDENT")
@@ -60,7 +62,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         // Allow any localhost port (dev servers move between 4200/4300/4301/…).
         // allowedOriginPatterns (not allowedOrigins) is required alongside allowCredentials(true).
-        config.setAllowedOriginPatterns(List.of("https://hiregrad-application.vercel.app","hiregrad-application-605i9lpjv-parneammuleshwari-3144s-projects.vercel.app"));
+
+        config.setAllowedOriginPatterns(List.of("https://hiregrad-application.vercel.app","https://hiregrad-application-605i9lpjv-parneammuleshwari-3144s-projects.vercel.app","http://localhost:*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -68,5 +71,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+
     }
 }
