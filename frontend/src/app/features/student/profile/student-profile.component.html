@@ -129,7 +129,8 @@
           </div>
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Address</label>
-            <input id="profile-address-input" formControlName="address" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" />
+            <input id="profile-address-input" formControlName="address" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.address.invalid && f.address.touched" />
+            @if (f.address.invalid && f.address.touched) { <p class="mt-1 text-xs text-red-500">Address is required.</p> }
           </div>
           <div>
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Institute email</label>
@@ -149,7 +150,7 @@
               </select>
               <input id="profile-phone-input" formControlName="phone" inputmode="numeric" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="f.phone.invalid && f.phone.touched" />
             </div>
-            @if (f.phone.invalid && f.phone.touched) { <p class="mt-1 text-xs text-red-500">Enter a valid phone number (7–15 digits).</p> }
+            @if (f.phone.invalid && f.phone.touched) { <p class="mt-1 text-xs text-red-500">Enter a valid 10-digit phone number.</p> }
           </div>
         </form>
       </section>
@@ -237,7 +238,7 @@
         <h3 class="mb-4 text-sm font-bold text-slate-900 dark:text-white">Resume</h3>
 
         <!-- file option -->
-        @if (resumeFileName()) {
+    <!--    @if (resumeFileName()) {
           <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/50">
             <span class="flex items-center gap-2 truncate text-sm text-slate-700 dark:text-slate-200">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
@@ -257,10 +258,10 @@
         } @else {
           <p class="text-sm text-slate-400">No resume uploaded.</p>
         }
-
+        -->
         <!-- link option -->
         <div class="mt-3">
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Or paste a resume link</label>
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Paste a resume link</label>
           <form [formGroup]="form" class="flex gap-2">
             <input formControlName="resumeLink" placeholder="https://drive.google.com/…" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-400/30 disabled:cursor-default disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800/50" [class.border-red-400]="(f.resumeLink.invalid && f.resumeLink.touched) || linkError()" />
             @if (editing()) { <button type="button" (click)="saveResumeLink()" class="rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300">Save link</button> }
