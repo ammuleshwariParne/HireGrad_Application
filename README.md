@@ -2,6 +2,8 @@
 
 A role-based campus placement platform that streamlines the entire recruitment lifecycle for **students** and **placement officers (admins)** — job posting, applications, status tracking, student accounts, and real-time placement analytics.
 
+https://hire-grad-application.vercel.app/
+ 
 ## Tech stack
 - **Frontend:** Angular 20 + Tailwind CSS (standalone components, signals, zoneless)
 - **Backend:** Spring Boot 3.5 (Java 21), Spring Security + JWT, layered Controller–Service–Repository
